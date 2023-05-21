@@ -1,0 +1,2 @@
+# blog
+keep idea
