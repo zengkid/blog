@@ -140,9 +140,6 @@
      5. System -> Router Identity修改软路由名称，可以保留不变
      6. 点击`apply`确认
      7. 然后就可以观察到拨号的PPPoE status为连接状态，此时要注意DHCP Server Range有没有被重置回来或者不是我们之前填写的IP段，如果有问题的话请修改回来
-
-        ![image](https://github.com/zengkid/blog/assets/3382739/cce1e117-0e2d-4df4-9b99-e3223395a5b5)
-
   6. DNS设置，IP -> DNS打开DNS设置窗口，在Servers输入114.114.114.114和1.1.1.1或者其他你熟悉的DNS服务器，将Allow remote Requests打勾
 
       ![image](https://github.com/zengkid/blog/assets/3382739/34b52ba9-8863-4316-bade-7303746782b3)
