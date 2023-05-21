@@ -156,6 +156,11 @@
   /ip firewall nat
   add chain=dstnat protocol=tcp dst-port=3389 in-interface-list=WAN  action=dst-nat to-address=192.168.8.8 to-port=3389 
   ```
+   routeros的端口映射后，在外网能正常访问，但是在内网通过公网ip或者域名访问时候就连接不上了。不过我们在内网一般不会直接通过外网IP访问内网的服务，这是我们直接通过routeros的DNS static映射一个域名服务给具体的设备。
+   例如我们要访问内网群晖的服务一般是https://qunhui.mydomain.com:5000,做完5000端口转发后，然后我们打开DNS的设置, IP -> DNS -> Static打开静态ip域名映射
+   Name输入qunhui.mydomain.com, Address输入群晖的内网IP地址，点击OK确认。
+   这样设置后内外网都可以通过域名访问群晖了，不过如果转发端口dst-port和to-port不一样的话，就需要根据内外网来访问了。
+   
   2. 以下防火墙命令开发ping命令响应和开放9291,80和22端口，如果不想开放这些端口可以不加
   ```
   /ip firewall filter
@@ -179,4 +184,154 @@
     /user remove admin
     ```
     
-  
+网上提供防火墙的例子,感觉不错。
+ ```
+  # RouterOS 7.9
+  #
+  # model = RB4011iGS+5HacQ2HnD
+  /ip firewall address-list
+  add address=123.45.67.89 comment=Giga3 list=vps
+  add address=23.237.231.0/24 comment=SatTV list=vps
+  /ip firewall filter
+  add action=fasttrack-connection chain=forward comment="defconf: fasttrack" \
+      connection-state=established,related hw-offload=yes
+  add action=accept chain=forward comment=\
+      "defconf: accept established,related, untracked" connection-state=\
+      established,related,new,untracked
+  add action=accept chain=input comment=\
+      "defconf: accept established,related,untracked" connection-state=\
+      established,related,untracked
+  add action=accept chain=forward comment="Allow all from local" \
+      in-interface-list=!WAN
+  add action=accept chain=input comment="Accept all from local " \
+      in-interface-list=LAN
+  add action=accept chain=input comment="RB4011 accept SSH" dst-port=22,80,443 \
+      in-interface-list=WAN protocol=tcp
+  add action=accept chain=input comment="local WG virtual**" dst-port=12312 \
+      in-interface=pppoe-out1 protocol=udp
+  add action=accept chain=input comment="accept OSPF" in-interface-list=WAN \
+      protocol=ospf
+  add action=accept chain=input comment="defconf: accept ICMP" protocol=icmp
+  add action=accept chain=input comment=\
+      "defconf: accept to local loopback (for CAPsMAN)" dst-address=127.0.0.1
+  add action=drop chain=input comment="defconf: drop invalid" connection-state=\
+      invalid
+  add action=drop chain=input comment="defconf: drop all not coming from LAN" \
+      in-interface-list=!LAN
+  add action=accept chain=forward comment="defconf: accept in ipsec policy" \
+      ipsec-policy=in,ipsec
+  add action=accept chain=forward comment="defconf: accept out ipsec policy" \
+      ipsec-policy=out,ipsec
+  add action=reject chain=forward comment="Guest can't access main " \
+      connection-state=invalid,new dst-address=192.168.88.0/24 reject-with=\
+      icmp-network-unreachable src-address=172.16.1.0/24
+  add action=drop chain=forward comment="defconf: drop invalid" \
+      connection-state=invalid log=yes log-prefix=fwd
+  add action=drop chain=forward comment=\
+      "defconf: drop all from WAN not DSTNATed" connection-nat-state=!dstnat \
+      connection-state=new in-interface-list=WAN
+  /ip firewall mangle
+  add action=change-mss chain=forward new-mss=clamp-to-pmtu out-interface-list=\
+      WAN passthrough=yes protocol=tcp tcp-flags=syn
+  add action=mark-routing chain=prerouting comment="Fitst 32 hosts no virtual**" \
+      dst-address=!192.168.0.0/16 new-routing-mark=DirectWAN passthrough=no \
+      src-address=192.168.88.0/27
+  add action=mark-routing chain=prerouting comment=\
+      "atombox to WAN only use PPPoE" dst-address=!192.168.0.0/16 \
+      new-routing-mark=DirectWAN passthrough=no src-mac-address=\
+      12:34:56:B2:33:80
+  add action=mark-routing chain=prerouting comment="All VPS go PPPoE" \
+      dst-address-list=vps new-routing-mark=DirectWAN passthrough=yes
+  add action=mark-routing chain=prerouting comment="Guest vlan " \
+      new-routing-mark=DirectWAN passthrough=no src-address=172.16.1.0/24
+  /ip firewall nat
+  add action=src-nat chain=srcnat comment=SRC out-interface=pppoe-out1 \
+      to-addresses=101.102.103.104
+  add action=src-nat chain=srcnat out-interface=wg1 to-addresses=10.28.6.20
+  add action=src-nat chain=srcnat out-interface=wg2 to-addresses=10.28.7.20
+  add action=src-nat chain=srcnat comment=SRC log=yes out-interface=pppoe-out1 \
+      src-address=172.16.0.0/16 to-addresses=101.102.103.104
+  add action=src-nat chain=srcnat comment="VLAN IoT" out-interface=vlan_iot \
+      to-addresses=172.16.10.1
+  add action=masquerade chain=srcnat comment="Fiber Modem" out-interface=ether1
+  /ip firewall service-port
+  set ftp disabled=yes
+  set tftp disabled=yes
+  set h323 disabled=yes
+  set p p t p disabled=yes
+  set rtsp disabled=no
+  #
+  # IPV6
+  #
+  /ipv6 firewall address-list
+  add address=::/128 comment="defconf: unspecified address" list=bad_ipv6
+  add address=::1/128 comment="defconf: lo" list=bad_ipv6
+  add address=fec0::/10 comment="defconf: site-local" list=bad_ipv6
+  add address=::ffff:0.0.0.0/96 comment="defconf: ipv4-mapped" list=bad_ipv6
+  add address=::/96 comment="defconf: ipv4 compat" list=bad_ipv6
+  add address=100::/64 comment="defconf: discard only " list=bad_ipv6
+  add address=2001:db8::/32 comment="defconf: documentation" list=bad_ipv6
+  add address=2001:10::/28 comment="defconf: ORCHID" list=bad_ipv6
+  add address=3ffe::/16 comment="defconf: 6bone" list=bad_ipv6
+  /ipv6 firewall filter
+  add action=accept chain=input comment=\
+      "defconf: accept established,related,untracked" connection-state=\
+      established,related,untracked
+  add action=accept chain=forward comment=\
+      "defconf: accept established,related,untracked" connection-state=\
+      established,related,untracked
+  add action=accept chain=forward comment="Allow Local " in-interface-list=!WAN
+  add action=accept chain=forward comment=Ping protocol=icmpv6
+  add action=accept chain=input comment="accept anything from LAN" \
+      in-interface-list=!WAN
+  add action=accept chain=input comment="RB4011 accept SSH" dst-port=22,80,443 \
+      in-interface-list=WAN protocol=tcp
+  add action=accept chain=forward comment="allow SSH,WWW,HTTPS,etc" dst-port=\
+      22,80,443,993 in-interface-list=WAN protocol=tcp
+  add action=accept chain=input comment="Local Wireguard" dst-port=12312 \
+      in-interface=pppoe-out1 protocol=udp
+  add action=accept chain=input comment="for OSPF" protocol=ospf
+  add action=accept chain=input comment="defconf: accept ICMPv6" protocol=\
+      icmpv6
+  add action=accept chain=input comment="defconf: accept UDP traceroute" port=\
+      33434-33534 protocol=udp
+  add action=accept chain=input comment=\
+      "defconf: accept DHCPv6-Client prefix delegation." dst-port=546 protocol=\
+      udp src-address=fe80::/10
+  add action=accept chain=input comment="defconf: accept IKE" dst-port=500,4500 \
+      protocol=udp
+  add action=accept chain=input comment="defconf: accept ipsec AH" protocol=\
+      ipsec-ah
+  add action=accept chain=input comment="defconf: accept ipsec ESP" protocol=\
+      ipsec-esp
+  add action=accept chain=input comment=\
+      "defconf: accept all that matches ipsec policy" ipsec-policy=in,ipsec
+  add action=drop chain=input comment="defconf: drop invalid" connection-state=\
+      invalid
+  add action=drop chain=forward comment=\
+      "defconf: drop packets with bad src ipv6" src-address-list=bad_ipv6
+  add action=drop chain=forward comment=\
+      "defconf: drop packets with bad dst ipv6" dst-address-list=bad_ipv6
+  add action=drop chain=forward comment="defconf: rfc4890 drop hop-limit=1" \
+      hop-limit=equal:1 protocol=icmpv6
+  add action=drop chain=forward comment="defconf: drop invalid" \
+      connection-state=invalid
+  add action=accept chain=forward comment="defconf: accept HIP" protocol=139
+  add action=drop chain=forward comment=\
+      "defconf: drop everything else not coming from LAN" in-interface-list=\
+      !LAN
+  /ipv6 firewall mangle
+  add action=change-mss chain=forward comment="fix MTU, make HTTPS happy" \
+      new-mss=clamp-to-pmtu passthrough=yes protocol=tcp tcp-flags=syn
+  add action=mark-routing chain=prerouting comment=ATOMBOX dst-address=::/0 \
+      in-interface-list=LAN log=yes new-routing-mark=DirectWAN passthrough=no \
+      src-mac-address=12:34:56:B2:33:80
+  /ipv6 firewall nat
+  add action=src-nat chain=srcnat out-interface=wg1 src-address=!fe00::/8 \
+      to-address=fd80:88:2::20/128
+  add action=src-nat chain=srcnat out-interface=wg2 src-address=!fe00::/8 \
+      to-address=fd80:88:66:3::20/128
+  add action=masquerade chain=srcnat out-interface=pppoe-out1 src-address=\
+      fd80::/16
+```
+
