@@ -148,4 +148,35 @@
       ![image](https://github.com/zengkid/blog/assets/3382739/34b52ba9-8863-4316-bade-7303746782b3)
       ![image](https://github.com/zengkid/blog/assets/3382739/4bd172da-b42e-4bd6-9a30-e90dda79f137)
 
-  7.最基本的上网设置已经完成，其他客户端现在可以连接上routeeros上网了  
+  7.最基本的上网设置已经完成，其他客户端现在可以连接上routeros上网了  
+
+* 高级设置
+  1. 端口转发,远程桌面3389示例
+  ```
+  /ip firewall nat
+  add chain=dstnat protocol=tcp dst-port=3389 in-interface-list=WAN  action=dst-nat to-address=192.168.8.8 to-port=3389 
+  ```
+  2. 以下防火墙命令开发ping命令响应和开放9291,80和22端口，如果不想开放这些端口可以不加
+  ```
+  /ip firewall filter
+  add chain=input connection-state=established,related action=accept comment="accept established,related";
+  add chain=input connection-state=invalid action=drop;
+  add chain=input in-interface-list=WAN protocol=icmp action=accept comment="allow ICMP";
+  add chain=input in-interface-list=WAN protocol=tcp port=8291 action=accept comment="allow Winbox";
+  add chain=input in-interface-list=WAN protocol=tcp port=80 action=accept comment="allow webfig";
+  add chain=input in-interface-list=WAN protocol=tcp port=22 action=accept comment="allow SSH";
+  add chain=input in-interface-list=WAN action=drop comment="block everything else";
+  ```
+  不过开放22端口的后果很严重，日志不断地接收到远程尝试登录，所以最好不要开放22端口，如果实在又远程ssh登录的需求，可以尝试修改SSH的端口号,例如修改为2200
+  ```
+    /ip service set ssh port=2200
+    /ip/firewall/filter add chain=input in-interface-list=WAN protocol=tcp port=2200 action=accept comment="allow SSH";
+  ```
+
+  3. 新增用户并且删除默认的`admin`用户
+    ```
+    /user add name=myadmin password=mypassword group=full
+    /user remove admin
+    ```
+    
+  
