@@ -117,13 +117,17 @@
 * 连接routeros
   1. 下载[winbox](ttps://mikrotik.com/download)
   2. 打开winbox,可以在网上邻居看到routeros的连接，因为还没有配置任何ip地址，所以看到的ip地址是 `0.0.0.0`或者是 `fe80::e80c:1aff:fe83:a97b%19`选择其中一个作为连接，然后在Login输入默认账号 `admin`,密码为空
+
         ![image](https://github.com/zengkid/blog/assets/3382739/7fc95d33-9fa1-49a9-9fc2-dddff93fb661)
   3. 进入winbox后提示修改密码
+
         ![image](https://github.com/zengkid/blog/assets/3382739/3c81535b-0137-41f4-ac55-a2351d23d7d7)
   4. 输入新密码后点击`Change Now`
+
         ![image](https://github.com/zengkid/blog/assets/3382739/b39606da-2f61-4864-92d3-d6e053bbed87)
 * routeros快速设置
-  1. 点击左侧彩电的Quick Set
+  1. 点击左侧菜单的Quick Set
+
         ![image](https://github.com/zengkid/blog/assets/3382739/c256c522-bfb5-4bd2-8261-8bf16018afd8)
   2. `Configuartion` -> `Mode` 选择 `Router`打开快速设置窗口
   3. `Internet` -> `Address Acquisition` 选择 `PPPoE`
@@ -136,8 +140,12 @@
      5. System -> Router Identity修改软路由名称，可以保留不变
      6. 点击`apply`确认
      7. 然后就可以观察到拨号的PPPoE status为连接状态，此时要注意DHCP Server Range有没有被重置回来或者不是我们之前填写的IP段，如果有问题的话请修改回来
-    ![image](https://github.com/zengkid/blog/assets/3382739/34b52ba9-8863-4316-bade-7303746782b3)
+
+        ![image](https://github.com/zengkid/blog/assets/3382739/cce1e117-0e2d-4df4-9b99-e3223395a5b5)
+
   6. DNS设置，IP -> DNS打开DNS设置窗口，在Servers输入114.114.114.114和1.1.1.1或者其他你熟悉的DNS服务器，将Allow remote Requests打勾
-      ![image](https://github.com/zengkid/blog/assets/3382739/49fb694f-fe21-4426-9838-7b14660a1919)
-      ![Uploading image.png…]()
+
+      ![image](https://github.com/zengkid/blog/assets/3382739/34b52ba9-8863-4316-bade-7303746782b3)
+      ![image](https://github.com/zengkid/blog/assets/3382739/4bd172da-b42e-4bd6-9a30-e90dda79f137)
+
   7.最基本的上网设置已经完成，其他客户端现在可以连接上routeeros上网了  
