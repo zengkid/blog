@@ -108,8 +108,7 @@
      选择桥接网卡
      ![image](https://github.com/zengkid/blog/assets/3382739/45812de3-3f4b-4482-883c-0c893fb4bf5e)
      
-      **注意：由于我在PVE的第一网卡为管理口了，所以只能设置为LAN口，所以我在配置routeros时候，桥接口调整了以下，net0的桥接口为vmbr1，而net1的桥接口为vmbr0zui
-      最终配置如下图
+      **注意：由于我在PVE的第一网卡为管理口了，所以只能设置为LAN口，所以我在配置routeros时候，桥接口调整了以下，net0的桥接口为vmbr1，而net1的桥接口为vmbr0** 最终配置如下图
      ![image](https://github.com/zengkid/blog/assets/3382739/e89d5141-3290-4e5d-af22-4bc8a731aeef)
     
 * 安装教程到此为止，下一步进入routeros的设置教程   
