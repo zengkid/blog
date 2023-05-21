@@ -1,5 +1,12 @@
 ### PVE下安装routeros
-* 通过SSH登录PVE，账号需要又创建VM的权限
+* 设置Local保存Disk
+  > 登录PVE的web管理界面
+  > DataCenter -> local(pve) -> Storage, 选中local双击打开编辑对话框
+  > 在Content列表中选中Disk
+    ![image](https://github.com/zengkid/blog/assets/3382739/bc225d27-2863-4e11-977b-306d993b8daf)
+  > 保存该设置
+
+* 通过SSH登录PVE，账号需要有创建VM的权限
 * 编写自动安装脚本, 此脚本来源于官方
   > vi routeros-install.sh, 然后将一下内容贴上去
   ```
@@ -73,5 +80,13 @@
   > 按ESC后输入 `:x` 保存退出
   > 添加运行权限 `chmod +x routeros-install.sh`
 * 执行安装脚本  
-  > ./routeros-install.sh, 然后安装脚本会提示你要安装哪个版本的routeros，在此选择最新版本，目前最新的是7.9
-    ![image](https://github.com/zengkid/blog/assets/3382739/751dbac8-b65a-4014-ad04-dde440cb71eb)
+  > ./routeros-install.sh, 然后安装脚本会提示你要安装哪个版本的routeros，目前最新的是7.9,所以可以输入7.9
+  
+    ![image](https://github.com/zengkid/blog/assets/3382739/f5c9d1aa-1da4-472d-a41d-897b191a0bb4)
+  > 然后提示需要创建的虚拟机编号，输入一个不在列表中的虚拟机ID `110`
+  
+    ![image](https://github.com/zengkid/blog/assets/3382739/6fde058e-b81e-4a30-8d44-4109516f30e5)
+  > 根据提示会结束安装
+  
+    ![image](https://github.com/zengkid/blog/assets/3382739/2906402e-de11-4627-9397-12c8a7d68469)
+
