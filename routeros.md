@@ -1,5 +1,5 @@
 ### PVE下安装routeros
-* 设置Local保存Disk
+* 设置磁盘镜像可保存在Local中
   > 登录PVE的web管理界面
   > DataCenter -> local(pve) -> Storage, 选中local双击打开编辑对话框
   > 在Content列表中选中Disk
