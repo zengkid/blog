@@ -9,7 +9,7 @@
 
 * 通过SSH登录PVE，账号需要有创建VM的权限
 * 编写自动安装脚本, 此脚本来源于官方
-  > vi routeros-install.sh, 然后将一下内容贴上去
+  > vi routeros-install.sh, 然后将以下内容贴上去
   ```
   #!/bin/bash
 
