@@ -89,8 +89,7 @@
     ![image](https://github.com/zengkid/blog/assets/3382739/6fde058e-b81e-4a30-8d44-4109516f30e5)
   > 根据提示会结束安装
        
-      ![image](https://github.com/zengkid/blog/assets/3382739/2906402e-de11-4627-9397-12c8a7d68469)
-
+     ![image](https://github.com/zengkid/blog/assets/3382739/700cedaf-f362-41d4-9960-ddc16007980a)
   
  * 修改虚拟机配置
    > 安装后在PVE看到新创建的routeros虚拟机，不过内存和硬盘都比较小,而且只有一块网卡
