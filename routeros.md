@@ -3,6 +3,7 @@
   > 登录PVE的web管理界面
   > DataCenter -> local(pve) -> Storage, 选中local双击打开编辑对话框
   > 在Content列表中选中Disk
+  
     ![image](https://github.com/zengkid/blog/assets/3382739/bc225d27-2863-4e11-977b-306d993b8daf)
   > 保存该设置
 
