@@ -88,6 +88,31 @@
   
     ![image](https://github.com/zengkid/blog/assets/3382739/6fde058e-b81e-4a30-8d44-4109516f30e5)
   > 根据提示会结束安装
+       
+      ![image](https://github.com/zengkid/blog/assets/3382739/2906402e-de11-4627-9397-12c8a7d68469)
+
   
-    ![image](https://github.com/zengkid/blog/assets/3382739/2906402e-de11-4627-9397-12c8a7d68469)
+ * 修改虚拟机配置
+   > 安装后在PVE看到新创建的routeros虚拟机，不过内存和硬盘都比较小,而且只有一块网卡
+    
+      ![image](https://github.com/zengkid/blog/assets/3382739/b6fd2e84-1fa8-40c8-83d3-44c42d436d3c)
+
+   > 修改内存和硬盘大小 `vi /etc/pve/qemu-server/110.conf`，根据个人喜好修改内存和硬盘大小
+    
+      ![image](https://github.com/zengkid/blog/assets/3382739/d0f14aca-3113-4033-bdd0-91f4331ea3d7)
+
+   > 添加新网卡
+     
+     Hardware -> Add -> Network Device
+     ![image](https://github.com/zengkid/blog/assets/3382739/21246dd1-7cc5-4af8-8738-5939096266aa)
+     
+     选择桥接网卡
+     ![image](https://github.com/zengkid/blog/assets/3382739/45812de3-3f4b-4482-883c-0c893fb4bf5e)
+     
+      ** 注意：我在routeros的第一块网卡设置为拨号，由于我在PVE的第一网卡为管理口了，所以只能设置为LAN口，所以我在配置routeros时候，桥接口调整了以下，net0的桥接口为vmbr1，而net1的桥接口为vmbr0 **
+     ![image](https://github.com/zengkid/blog/assets/3382739/e89d5141-3290-4e5d-af22-4bc8a731aeef)
+
+
+    
+  > 安装教程到此为止，下一步进入routeros的设置教程   
 
