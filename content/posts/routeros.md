@@ -1,3 +1,9 @@
++++
+title = 'PVE安装设置RouterOS指南'
+date = 2023-05-21T12:52:29+08:00
+draft = false
++++
+
 ### PVE下安装routeros
 * 设置磁盘镜像可保存在Local中
   > 登录PVE的web管理界面

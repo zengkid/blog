@@ -1,0 +1,24 @@
+baseURL = 'https://blog.poratu.com/'
+title = '无聊博客'
+theme = 'paper'
+author = "zengkid"
+
+
+math = true  
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name = "关于"
+    url = "/about/"
+    weight = 10
+  [[menu.main]]
+    identifier = "articles"
+    name = "文章"
+    url = "/posts/"
+    weight = 10
